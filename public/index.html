@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figma Agent - Intelligent AI Design Engine</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Navigation Header -->
+    <header class="navbar">
+      <div class="brand">
+        <div class="logo-icon">🎨</div>
+        <h1>Figma Agent</h1>
+        <span class="version-tag">Skills & PRD Engine</span>
+      </div>
+
+      <div class="status-bar">
+        <div id="pluginStatus" class="status-badge disconnected">
+          <span class="dot"></span>
+          <span class="text">Figma Plugin: Disconnected</span>
+        </div>
+        <div id="restStatus" class="status-badge rest-off">
+          <span class="text">REST Token: Not Set</span>
+        </div>
+        <button id="btnSettings" class="icon-btn" title="Settings">⚙️ Settings</button>
+      </div>
+    </header>
+
+    <!-- Main Navigation Bar for Tabs -->
+    <nav class="main-tabs">
+      <button class="main-tab-btn active" data-tab="chatView">💬 AI Designer & Chat</button>
+      <button class="main-tab-btn" data-tab="prdView">📄 PRD & Brief Translator</button>
+      <button class="main-tab-btn" data-tab="inspirationView">✨ Inspiration & Style Search</button>
+      <button class="main-tab-btn" data-tab="skillsView">📚 Agent Skills Library</button>
+      <button class="main-tab-btn" data-tab="toolsView">🛠️ Direct Tool Executor</button>
+    </nav>
+
+    <!-- Main Content Views -->
+    <main class="main-content">
+
+      <!-- View 1: AI Chat & Canvas Builder -->
+      <section class="tab-view active" id="chatView">
+        <aside class="sidebar">
+          <div class="panel-section">
+            <h3>⚡ Quick Design Presets</h3>
+            <div class="template-list">
+              <button class="template-btn" data-prompt="Create a SaaS landing page with dark glassmorphism theme, hero section, dual CTAs, and feature grid">
+                <span>🚀</span> SaaS Landing Page
+              </button>
+              <button class="template-btn" data-prompt="Create an analytics dashboard with sidebar nav, KPI metric cards, and chart placeholder">
+                <span>📊</span> Executive Analytics Dashboard
+              </button>
+              <button class="template-btn" data-prompt="Create a mobile banking app with balance card, 4 quick action icons, and bottom nav">
+                <span>📱</span> Mobile Banking App
+              </button>
+              <button class="template-btn" data-prompt="Create a checkout panel with payment fields and order summary sidebar">
+                <span>💳</span> Multi-Step Checkout
+              </button>
+              <button class="template-btn" data-prompt="Update selected frame to dark glassmorphism theme and refactor to Auto-Layout">
+                <span>🪄</span> Refactor & Rebrand Selection
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        <section class="workspace">
+          <div class="chat-container">
+            <div class="instructions-card">
+              <h4>💡 How to connect Figma Agent (Without MCP):</h4>
+              <ol>
+                <li>Open Figma -> Plugins -> Development -> <strong>Import manifest from file...</strong></li>
+                <li>Select <code>plugin/manifest.json</code>.</li>
+                <li>Run <strong>Figma AI Agent Bridge</strong> plugin in Figma. Click <strong>Connect Agent</strong> to auto-connect to <code>ws://localhost:3050/ws</code>.</li>
+              </ol>
+            </div>
+
+            <!-- Message History -->
+            <div id="chatHistory" class="chat-history">
+              <div class="msg system-msg">
+                <div class="avatar">🤖</div>
+                <div class="content">
+                  <p>Hello! I am <strong>Figma Agent</strong>. I am equipped with installed <strong>Skills</strong>, <strong>PRD Brief Analyzers</strong>, <strong>Inspiration Search</strong>, and <strong>Contextual Editors</strong> to translate briefs into Figma designs.</p>
+                  <p>Try typing a slash command like <code>/translate-prd-brief</code>, <code>/find-inspiration</code>, or ask me to generate a complete dashboard or landing page!</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Prompt Bar -->
+            <div class="prompt-bar">
+              <input type="text" id="promptInput" placeholder="Ask Figma Agent or type /skill command (e.g. /translate-prd-brief, /find-inspiration)..." />
+              <button id="btnSendPrompt" class="btn primary-btn">Generate in Figma 🚀</button>
+            </div>
+          </div>
+
+          <!-- Output Stream & Render Preview -->
+          <div class="output-panel">
+            <div class="panel-tabs">
+              <button class="tab-btn active" data-tab="logs">Execution Stream</button>
+              <button class="tab-btn" data-tab="preview">Image Preview</button>
+            </div>
+            <div class="tab-content active" id="tabLogs">
+              <div id="logStream" class="log-stream">
+                <div class="log-entry info">System ready. Installed skills loaded. Waiting for instructions...</div>
+              </div>
+            </div>
+            <div class="tab-content" id="tabPreview">
+              <div id="previewContainer" class="preview-container">
+                <p class="empty-preview">No exported image preview yet. Run 'Export Selection Image' or ask the agent to export canvas frames.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- View 2: PRD & Brief Translator -->
+      <section class="tab-view" id="prdView">
+        <div class="full-view-panel">
+          <div class="panel-header">
+            <h2>📄 Translate Product Requirement Document (PRD) to Figma UI</h2>
+            <p>Paste a PRD, user story, or product brief below. Figma Agent will parse the requirement spec, screen architecture, and theme tokens, and construct the complete design system in Figma!</p>
+          </div>
+          <div class="prd-split-layout">
+            <div class="prd-input-box">
+              <label>Paste PRD / Brief Text</label>
+              <textarea id="prdText" rows="16" placeholder="Example:
+Product Name: AI Code Studio
+Category: B2B Developer Tool
+Theme: Dark Mode Neon
+Requirements:
+1. Dashboard screen with top navigation, metric summary cards (API usage, active deployments, cost savings).
+2. Code editor preview card with syntax highlighting mock.
+3. Pricing & Plan comparison card with monthly/yearly billing toggle and primary checkout button."></textarea>
+              <button id="btnParsePRD" class="btn primary-btn block-btn">Parse & Generate Figma UI 🚀</button>
+            </div>
+            <div class="prd-output-box">
+              <h3>Parsed Screen Architecture Spec</h3>
+              <div id="prdSpecResult" class="spec-result-card">
+                <p class="empty-text">Click 'Parse & Generate' to preview screen specifications.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- View 3: Inspiration & Style Search -->
+      <section class="tab-view" id="inspirationView">
+        <div class="full-view-panel">
+          <div class="panel-header">
+            <h2>✨ Design Inspiration & Style Token Search</h2>
+            <p>Explore design trends, color palettes, and typography pairs. Click any style card to translate its visual tokens directly into Figma canvas elements!</p>
+          </div>
+          <div class="inspiration-search-bar">
+            <input type="text" id="inspirationQuery" placeholder="Search inspiration (e.g. Glassmorphism Dark SaaS, FinTech Emerald, Minimalist Light)..." />
+            <button id="btnSearchInspiration" class="btn primary-btn">Search Inspiration</button>
+          </div>
+          <div id="inspirationGrid" class="inspiration-grid">
+            <!-- Cards loaded dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- View 4: Skills Library -->
+      <section class="tab-view" id="skillsView">
+        <div class="full-view-panel">
+          <div class="panel-header">
+            <h2>📚 Agent Skills Library</h2>
+            <p>Skills are reusable instructions that teach Figma Agent how to handle specific design workflows (PRD translation, design reviews, brand guidelines, responsive variants).</p>
+          </div>
+          <div class="skills-grid" id="skillsGrid">
+            <!-- Loaded dynamically -->
+          </div>
+          <div class="custom-skill-box">
+            <h3>➕ Install Custom Skill (Markdown format)</h3>
+            <textarea id="customSkillMd" rows="8" placeholder="---
+name: my-custom-skill
+description: Custom brand design guidelines
+category: brand
+command: /my-brand
+---
+
+# My Custom Brand Guidelines
+1. Always use #8B5CF6 for primary CTA buttons.
+2. Standardize corner radius to 12px."></textarea>
+            <button id="btnInstallSkill" class="btn primary-btn">Install Custom Skill</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- View 5: Direct Tool Executor -->
+      <section class="tab-view" id="toolsView">
+        <div class="full-view-panel">
+          <div class="panel-header">
+            <h2>🛠️ Direct Figma Tool Execution</h2>
+            <p>Test individual Figma Read & Write API tools directly with custom JSON payloads.</p>
+          </div>
+          <div class="tool-executor-box">
+            <div class="input-group">
+              <label>Select Figma Tool</label>
+              <select id="toolSelect">
+                <option value="">Loading tools...</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Tool Arguments (JSON)</label>
+              <textarea id="toolArgs" rows="6" placeholder='{ "text": "Hello Figma" }'></textarea>
+            </div>
+            <button id="btnRunTool" class="btn primary-btn">Execute Tool</button>
+            <div id="toolResultBox" class="tool-result-box">
+              <pre id="toolResultJson">Result will appear here...</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>⚙️ Configuration Settings</h3>
+          <button id="btnCloseSettings" class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="input-group">
+            <label for="cfgRestToken">Figma Access Token (Optional)</label>
+            <input type="text" id="cfgRestToken" placeholder="figd_..." />
+            <small>Provides off-canvas file reading via REST API without open plugin.</small>
+          </div>
+          <div class="input-group">
+            <label for="cfgLlmProvider">LLM Provider</label>
+            <select id="cfgLlmProvider">
+              <option value="builtin">Built-in Design & PRD Engine (No API key needed)</option>
+              <option value="openai">OpenAI (GPT-4o)</option>
+              <option value="anthropic">Anthropic (Claude 3.5)</option>
+            </select>
+          </div>
+          <div class="input-group" id="groupApiKey" style="display: none;">
+            <label for="cfgApiKey">LLM API Key</label>
+            <input type="password" id="cfgApiKey" placeholder="sk-..." />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btnSaveConfig" class="btn primary-btn">Save Configuration</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
